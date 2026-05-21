@@ -6,7 +6,9 @@ def create_black_hole_system():
     black_hole = Body(
         mass=50000,
         position=[0, 0],
-        velocity=[0, 0]
+        velocity=[0, 0],
+        radius=15,
+        body_type="black_hole"
     )
 
     bodies = [black_hole]
@@ -26,7 +28,9 @@ def create_black_hole_system():
         particle = Body(
             mass=1,
             position=[x, y],
-            velocity=[vx, vy]
+            velocity=[vx, vy],
+            radius=2,
+            body_type="particle"
         )
 
         bodies.append(particle)

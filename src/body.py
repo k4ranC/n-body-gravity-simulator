@@ -2,13 +2,16 @@ import numpy as np
 
 
 class Body:
-    def __init__(self, mass, position, velocity):
+    def __init__(self, mass, position, velocity, radius=4, body_type="planet"):
         self.mass = mass
+        self.radius = radius
+        self.body_type = body_type
 
         # Position and velocity are vectors
         self.position = np.array(position, dtype=float)
         self.velocity = np.array(velocity, dtype=float)
-
+        self.force = np.zeros(2)
+        
         # Force accumulator
         self.force = np.zeros(2)
 

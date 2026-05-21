@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 # Select the preset to simulate
-PRESET = "black_hole"
-# PRESET = "solar_system"
+# PRESET = "black_hole"
+PRESET = "solar_system"
 
 if PRESET == "solar_system":
     bodies = create_solar_system()
@@ -34,9 +34,27 @@ trails_x = []
 trails_y = []
 trail_lines = []
 
+def get_body_colour(body):
+    if body.body_type == "star":
+        return "yellow"
+    elif body.body_type == "planet":
+        return "blue"
+    elif body.body_type == "black_hole":
+        return "black"
+    elif body.body_type == "particle":
+        return "gray"
+    else:
+        return "white"
+
 for body in bodies:
     # Create a dot for the body and a line for its trail
-    dot, = ax.plot([], [], "o", markersize=4)
+    dot, = ax.plot(
+    [],
+    [],
+    "o",
+    markersize=body.radius,
+    color=get_body_colour(body)
+)
     trail, = ax.plot([], [], linewidth=1)
 
     # Store the dot and trail for each body
@@ -45,9 +63,8 @@ for body in bodies:
     trails_x.append([])
     trails_y.append([])
 
-
 def update(frame):
-    simulator.step(0.01) # change the timestep for faster/slower simulation
+    simulator.step(0.5) # change the timestep for faster/slower simulation
 
     # Update the positions of the bodies and their trails
     for i, body in enumerate(bodies):
