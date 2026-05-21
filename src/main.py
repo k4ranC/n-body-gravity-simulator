@@ -1,0 +1,1 @@
+print("N-body gravity simulator setup successful.")
