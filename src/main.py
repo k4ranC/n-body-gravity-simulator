@@ -1,79 +1,72 @@
-from body import Body
 from simulator import Simulator
+from presets.solar_system import create_solar_system
+from presets.black_hole import create_black_hole_system
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-# Define the bodies in the simulation
-sun = Body(
-    mass=10000,
-    position=[0, 0],
-    velocity=[0, 0]
-)
+# Select the preset to simulate
+PRESET = "black_hole"
+# PRESET = "solar_system"
 
-planet1 = Body(
-    mass=10,
-    position=[100, 0],
-    velocity=[0, 10]
-)
+if PRESET == "solar_system":
+    bodies = create_solar_system()
+elif PRESET == "black_hole":
+    bodies = create_black_hole_system()
+else:
+    raise ValueError("Unknown preset selected.")
 
-planet2 = Body(
-    mass=50,
-    position=[150, 0],
-    velocity=[0, 8]
-)
+# Initialize the simulator with the created bodies
+simulator = Simulator(bodies)
 
-# Create the simulator with the defined bodies
-simulator = Simulator([sun, planet1, planet2])
-
-# Set up the plot
 fig, ax = plt.subplots()
 
-# Set limits and labels
-ax.set_xlim(-200, 200)
-ax.set_ylim(-200, 200)
+# Set the limits and labels for the plot
+ax.set_xlim(-250, 250)
+ax.set_ylim(-250, 250)
 ax.set_aspect("equal")
 ax.set_xlabel("X position")
 ax.set_ylabel("Y position")
-ax.set_title("N-Body Gravity Simulation")
+ax.set_title(f"N-Body Gravity Simulation: {PRESET}")
 
-# Initialize plot elements for the sun and planets
-sun_dot, = ax.plot([], [], "o", markersize=10)
-planet1_dot, = ax.plot([], [], "o", markersize=5)
-planet2_dot, = ax.plot([], [], "o", markersize=5)
+# Create lists to hold the body dots and their trails
+body_dots = []
+trails_x = []
+trails_y = []
+trail_lines = []
 
-# Trails for planets
-planet1_trail_x = []
-planet1_trail_y = []
-planet2_trail_x = []
-planet2_trail_y = []
+for body in bodies:
+    # Create a dot for the body and a line for its trail
+    dot, = ax.plot([], [], "o", markersize=4)
+    trail, = ax.plot([], [], linewidth=1)
 
-# Initialize plot elements for trails
-planet1_trail, = ax.plot([], [])
-planet2_trail, = ax.plot([], [])
+    # Store the dot and trail for each body
+    body_dots.append(dot)
+    trail_lines.append(trail)
+    trails_x.append([])
+    trails_y.append([])
 
-# Update function for animation
+
 def update(frame):
-    simulator.step(0.01)  # change timestep here for faster/slower simulation
+    simulator.step(0.01) # change the timestep for faster/slower simulation
 
-    # Update positions of the sun and planets
-    sun_dot.set_data([sun.position[0]], [sun.position[1]])
-    planet1_dot.set_data([planet1.position[0]], [planet1.position[1]])
-    planet2_dot.set_data([planet2.position[0]], [planet2.position[1]])
+    # Update the positions of the bodies and their trails
+    for i, body in enumerate(bodies):
+        body_dots[i].set_data([body.position[0]], [body.position[1]])
 
-    # Update trails for planets
-    planet1_trail_x.append(planet1.position[0])
-    planet1_trail_y.append(planet1.position[1])
-    planet2_trail_x.append(planet2.position[0])
-    planet2_trail_y.append(planet2.position[1])
+        trails_x[i].append(body.position[0])
+        trails_y[i].append(body.position[1])
 
-    # Update trail data for plotting
-    planet1_trail.set_data(planet1_trail_x, planet1_trail_y)
-    planet2_trail.set_data(planet2_trail_x, planet2_trail_y)
+        trail_lines[i].set_data(trails_x[i], trails_y[i])
 
-    # Return the updated plot elements for blitting optimization
-    return sun_dot, planet1_dot, planet2_dot, planet1_trail, planet2_trail
+    return body_dots + trail_lines
 
-# Create animation
-animation = FuncAnimation(fig, update, frames=5000, interval=10, blit=True)
+# Create the animation
+animation = FuncAnimation(
+    fig,
+    update,
+    frames=5000,
+    interval=1,
+    blit=True
+)
 
 plt.show()
