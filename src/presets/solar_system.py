@@ -8,6 +8,7 @@ def create_solar_system():
     # Scale:
     # distance: 1 unit = 1 million km
     # velocity: million km per day
+    # time = days
 
     sun = Body(
         mass=1.989e30,
