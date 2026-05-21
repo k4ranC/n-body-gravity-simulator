@@ -10,7 +10,6 @@ class Body:
         # Position and velocity are vectors
         self.position = np.array(position, dtype=float)
         self.velocity = np.array(velocity, dtype=float)
-        self.force = np.zeros(2)
         
         # Force accumulator
         self.force = np.zeros(2)
