@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 # Select the preset to simulate
-# PRESET = "black_hole"
-PRESET = "solar_system"
+PRESET = "black_hole"
+# PRESET = "solar_system"
 
 if PRESET == "solar_system":
     bodies = create_solar_system()
@@ -16,13 +16,13 @@ else:
     raise ValueError("Unknown preset selected.")
 
 # Initialize the simulator with the created bodies
-simulator = Simulator(bodies)
+simulator = Simulator(bodies, gravitational_constant=4.982e-28) # Adjusted G for our scaled units
 
 fig, ax = plt.subplots()
 
 # Set the limits and labels for the plot
-ax.set_xlim(-250, 250)
-ax.set_ylim(-250, 250)
+ax.set_xlim(-300, 300)
+ax.set_ylim(-300, 300)
 ax.set_aspect("equal")
 ax.set_xlabel("X position")
 ax.set_ylabel("Y position")
@@ -36,7 +36,7 @@ trail_lines = []
 
 def get_body_colour(body):
     if body.body_type == "star":
-        return "yellow"
+        return "orange"
     elif body.body_type == "planet":
         return "blue"
     elif body.body_type == "black_hole":
@@ -44,7 +44,7 @@ def get_body_colour(body):
     elif body.body_type == "particle":
         return "gray"
     else:
-        return "white"
+        return "black"
 
 for body in bodies:
     # Create a dot for the body and a line for its trail
@@ -64,7 +64,7 @@ for body in bodies:
     trails_y.append([])
 
 def update(frame):
-    simulator.step(0.5) # change the timestep for faster/slower simulation
+    simulator.step(1) # change the timestep for faster/slower simulation
 
     # Update the positions of the bodies and their trails
     for i, body in enumerate(bodies):
