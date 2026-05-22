@@ -18,7 +18,8 @@ def create_black_hole_system():
 
     bodies = [black_hole]
 
-    for _ in range(100):
+    for _ in range(20):
+        # Randomly place particles in a disk around the black hole
         distance = np.random.uniform(150, 400)
         angle = np.random.uniform(0, 2 * np.pi)
 
