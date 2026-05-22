@@ -4,8 +4,8 @@ from presets.black_hole import create_black_hole_system
 from visualiser import run_visualisation
 
 # Select the preset to run
-PRESET = "black_hole"
-# PRESET = "solar_system"
+# PRESET = "black_hole"
+PRESET = "solar_system"
 
 #  Create the bodies based on the selected preset
 if PRESET == "solar_system":

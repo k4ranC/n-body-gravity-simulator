@@ -6,6 +6,7 @@ class Body:
         self.mass = mass
         self.radius = radius
         self.body_type = body_type
+        self.is_active = True
 
         # Position and velocity are vectors
         self.position = np.array(position, dtype=float)

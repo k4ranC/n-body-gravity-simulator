@@ -56,6 +56,11 @@ def run_visualisation(simulator, bodies, preset_name):
 
         # Update the positions of the bodies and their trails
         for i, body in enumerate(bodies):
+            if not body.is_active:
+                body_dots[i].set_data([], [])
+                trail_lines[i].set_data([], [])
+                continue
+
             body_dots[i].set_data([body.position[0]], [body.position[1]])
 
             trails_x[i].append(body.position[0])
