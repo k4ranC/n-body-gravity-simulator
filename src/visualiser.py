@@ -19,8 +19,8 @@ def run_visualisation(simulator, bodies, preset_name):
     fig, ax = plt.subplots()
 
     # Set up the plot limits and labels
-    ax.set_xlim(-300, 300)
-    ax.set_ylim(-300, 300)
+    ax.set_xlim(-5000, 5000)
+    ax.set_ylim(-5000, 5000)
     ax.set_aspect("equal")
     ax.set_xlabel("X position")
     ax.set_ylabel("Y position")
