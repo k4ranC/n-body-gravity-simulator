@@ -77,13 +77,37 @@ class Renderer:
         self.camera_x = body.position[0]
         self.camera_y = body.position[1]
 
-    def draw(self, bodies, selected_body=None, follow_mode=False):
+    def draw(self, bodies, selected_body=None, follow_mode=False, paused=False, steps_per_frame=1):
         self.screen.fill(BACKGROUND)
 
         if selected_body is not None:
-            info_text = f"Selected: {selected_body.name} | Follow: {follow_mode}"
+            status = "Paused" if paused else "Running"
+
+            info_text = (
+                f"Selected: {selected_body.name} | "
+                f"Follow: {follow_mode} | "
+                f"Status: {status} | "
+                f"Speed: {steps_per_frame}x"
+            )
+            
             info = self.font.render(info_text, True, (255, 255, 255))
             self.screen.blit(info, (10, 10))
+            controls = [
+                "SPACE: Pause / Play",
+                "=: Speed Up",
+                "-: Slow Down",
+                "R: Reset",
+                "1: Solar System",
+                "2: Black Hole",
+                "TAB: Cycle Body",
+                "F: Follow Body",
+                "WASD / Arrows: Move Camera",
+                "Mouse Wheel: Zoom"
+            ]
+
+            for i, control in enumerate(controls):
+                text = self.font.render(control, True, (180, 180, 180))
+                self.screen.blit(text, (10, 35 + i * 18))
 
         for body in bodies:
             if not body.is_active:

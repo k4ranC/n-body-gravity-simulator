@@ -100,7 +100,7 @@ while running:
     if follow_mode:
         renderer.follow_body(selected_body)
 
-    renderer.draw(bodies, selected_body, follow_mode)
+    renderer.draw(bodies, selected_body, follow_mode, paused, steps_per_frame)
     renderer.tick()
 
 pygame.quit()
