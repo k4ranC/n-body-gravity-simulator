@@ -33,14 +33,21 @@ class Simulator:
                 body_a.force += force
                 body_b.force -= force
 
-    # Update the positions and velocities of all bodies based on the calculated forces
+    # Perform a single simulation step using leapfrog integration
     def step(self, timestep):
         self.calculate_gravity()
-        self.handle_absorption()
 
         for body in self.bodies:
             if body.is_active:
                 body.update(timestep)
+
+        self.calculate_gravity()
+
+        for body in self.bodies:
+            if body.is_active:
+                body.finalize_update(timestep)
+
+        self.handle_absorption()
 
     # Handle absorption of bodies by black holes
     def handle_absorption(self):

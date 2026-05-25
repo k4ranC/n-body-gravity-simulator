@@ -17,15 +17,20 @@ class Body:
         # Force accumulator
         self.force = np.zeros(2)
 
+
+    # Leapfrog integration step
     def update(self, timestep):
-        # a = F / m
+        # First half-step velocity update
         acceleration = self.force / self.mass
+        self.velocity += 0.5 * acceleration * timestep
 
-        # Update velocity
-        self.velocity += acceleration * timestep
-
-        # Update position
+        # Full position update
         self.position += self.velocity * timestep
 
-        # Reset force after update
+    def finalize_update(self, timestep):
+        # Second half-step velocity update
+        acceleration = self.force / self.mass
+        self.velocity += 0.5 * acceleration * timestep
+
+        # Reset force after full update
         self.force = np.zeros(2)
