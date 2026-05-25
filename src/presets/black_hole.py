@@ -41,7 +41,7 @@ def create_black_hole_system():
             mass=1e18,
             position=[x, y],
             velocity=[vx, vy],
-            radius=3,
+            radius=300,
             body_type="particle"
         )
 

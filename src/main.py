@@ -1,25 +1,42 @@
+import pygame
+
 from simulator import Simulator
 from presets.solar_system import create_solar_system
 from presets.black_hole import create_black_hole_system
-from visualiser import run_visualisation
+from renderer import Renderer
 
-# Select the preset to run
-# PRESET = "black_hole"
+
 PRESET = "solar_system"
+# PRESET = "black_hole"
 
-#  Create the bodies based on the selected preset
 if PRESET == "solar_system":
     bodies = create_solar_system()
 elif PRESET == "black_hole":
     bodies = create_black_hole_system()
 else:
-    raise ValueError("Unknown preset selected.")
+    raise ValueError("Unknown preset")
 
-# Create the simulator with the bodies and a scaled gravitational constant
+
 simulator = Simulator(
     bodies,
-    gravitational_constant=4.982e-28
+    gravitational_constant=4.982e-28 # Adjusted gravitational constant for better visualization
 )
 
-# Run the visualisation for the selected preset
-run_visualisation(simulator, bodies, PRESET)
+renderer = Renderer()
+
+running = True
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+        renderer.handle_event(event)
+
+    renderer.handle_input()
+
+    simulator.step(1)
+    renderer.draw(bodies)
+    renderer.tick()
+
+pygame.quit()

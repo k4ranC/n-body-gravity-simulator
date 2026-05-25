@@ -1,17 +1,17 @@
 import numpy as np
 
-import body
-
-
+# Simulator class to manage the physics of the n-body simulation
 class Simulator:
     def __init__(self, bodies, gravitational_constant=1.0):
         self.bodies = bodies
         self.G = gravitational_constant
 
+    # Calculate gravitational forces between all pairs of bodies and update their force accumulators
     def calculate_gravity(self):
         for body in self.bodies:
             body.force = np.zeros(2)
 
+        # Calculate forces between each pair of bodies
         for i in range(len(self.bodies)):
             for j in range(i + 1, len(self.bodies)):
                 body_a = self.bodies[i]
@@ -33,6 +33,7 @@ class Simulator:
                 body_a.force += force
                 body_b.force -= force
 
+    # Update the positions and velocities of all bodies based on the calculated forces
     def step(self, timestep):
         self.calculate_gravity()
         self.handle_absorption()
@@ -41,6 +42,7 @@ class Simulator:
             if body.is_active:
                 body.update(timestep)
 
+    # Handle absorption of bodies by black holes
     def handle_absorption(self):
         black_holes = [body for body in self.bodies if body.body_type == "black_hole"]
 

@@ -2,10 +2,12 @@ import numpy as np
 
 
 class Body:
-    def __init__(self, mass, position, velocity, radius=4, body_type="planet"):
+    def __init__(self, mass, position, velocity, radius=4, body_type="planet", name="Body"):
         self.mass = mass
         self.radius = radius
         self.body_type = body_type
+        self.name = name
+        self.trail = []
         self.is_active = True
 
         # Position and velocity are vectors
