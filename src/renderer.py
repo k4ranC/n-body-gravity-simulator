@@ -73,16 +73,17 @@ class Renderer:
         label = self.font.render(body.name, True, (220, 220, 220))
         self.screen.blit(label, (screen_position[0] + 8, screen_position[1] + 8))
 
-    def draw(self, bodies):
+    def follow_body(self, body):
+        self.camera_x = body.position[0]
+        self.camera_y = body.position[1]
+
+    def draw(self, bodies, selected_body=None, follow_mode=False):
         self.screen.fill(BACKGROUND)
 
-        info = self.font.render(
-            f"Zoom: {self.zoom:.4f}",
-            True,
-            (255, 255, 255)
-        )
-
-        self.screen.blit(info, (10, 10))
+        if selected_body is not None:
+            info_text = f"Selected: {selected_body.name} | Follow: {follow_mode}"
+            info = self.font.render(info_text, True, (255, 255, 255))
+            self.screen.blit(info, (10, 10))
 
         for body in bodies:
             if not body.is_active:

@@ -32,6 +32,8 @@ renderer = Renderer()
 paused = False
 physics_timestep = 1
 steps_per_frame = 1
+selected_body_index = 0
+follow_mode = False
 
 running = True
 
@@ -61,28 +63,44 @@ while running:
                 PRESET = "solar_system"
                 bodies = load_preset(PRESET)
                 simulator = Simulator(bodies, gravitational_constant=4.982e-28)
-            
+                selected_body_index = 0
+                follow_mode = False
+
             # Switch to black hole
             elif event.key == pygame.K_2:
                 PRESET = "black_hole"
                 bodies = load_preset(PRESET)
                 simulator = Simulator(bodies, gravitational_constant=4.982e-28)
+                selected_body_index = 0
+                follow_mode = False
 
             # Reset simulation
             elif event.key == pygame.K_r:
                 bodies = load_preset(PRESET)
+                simulator = Simulator(bodies, gravitational_constant=4.982e-28)
+                selected_body_index = 0
+                follow_mode = False
 
-                simulator = Simulator(
-                    bodies,
-                    gravitational_constant=4.982e-28
-                )
+            # Cycle selected body
+            elif event.key == pygame.K_TAB:
+                selected_body_index = (selected_body_index + 1) % len(bodies)
+
+            # Toggle follow mode
+            elif event.key == pygame.K_f:
+                follow_mode = not follow_mode
 
     renderer.handle_input()
 
     if not paused:
         for _ in range(steps_per_frame):
             simulator.step(physics_timestep)
-    renderer.draw(bodies)
+    
+    selected_body = bodies[selected_body_index]
+
+    if follow_mode:
+        renderer.follow_body(selected_body)
+
+    renderer.draw(bodies, selected_body, follow_mode)
     renderer.tick()
 
 pygame.quit()
