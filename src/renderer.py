@@ -76,6 +76,14 @@ class Renderer:
     def draw(self, bodies):
         self.screen.fill(BACKGROUND)
 
+        info = self.font.render(
+            f"Zoom: {self.zoom:.4f}",
+            True,
+            (255, 255, 255)
+        )
+        
+        self.screen.blit(info, (10, 10))
+
         for body in bodies:
             if not body.is_active:
                 continue
