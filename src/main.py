@@ -50,7 +50,7 @@ while running:
 
             # Speed up
             elif event.key == pygame.K_EQUALS:
-                steps_per_frame *= 2
+                steps_per_frame = min(steps_per_frame * 2, 16)
 
             # Slow down
             elif event.key == pygame.K_MINUS:

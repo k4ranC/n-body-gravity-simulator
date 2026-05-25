@@ -81,7 +81,7 @@ class Renderer:
             True,
             (255, 255, 255)
         )
-        
+
         self.screen.blit(info, (10, 10))
 
         for body in bodies:
@@ -92,7 +92,7 @@ class Renderer:
 
             body.trail.append(body.position.copy())
 
-            if len(body.trail) > 1000:
+            if len(body.trail) > 300:
                 body.trail.pop(0) # Limit trail length to prevent memory issues
 
             self.draw_trail(body, colour)
