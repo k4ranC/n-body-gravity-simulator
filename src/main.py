@@ -56,6 +56,18 @@ while running:
             elif event.key == pygame.K_MINUS:
                 steps_per_frame = max(1, steps_per_frame // 2)
 
+            # Switch to solar system
+            elif event.key == pygame.K_1:
+                PRESET = "solar_system"
+                bodies = load_preset(PRESET)
+                simulator = Simulator(bodies, gravitational_constant=4.982e-28)
+            
+            # Switch to black hole
+            elif event.key == pygame.K_2:
+                PRESET = "black_hole"
+                bodies = load_preset(PRESET)
+                simulator = Simulator(bodies, gravitational_constant=4.982e-28)
+
             # Reset simulation
             elif event.key == pygame.K_r:
                 bodies = load_preset(PRESET)

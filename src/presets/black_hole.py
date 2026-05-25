@@ -9,11 +9,12 @@ def create_black_hole_system():
     # mass = kg
 
     black_hole = Body(
-        mass=1.989e31,  # 10 solar masses
+        mass=1.989e31,
         position=[0, 0],
         velocity=[0, 0],
-        radius=18,
-        body_type="black_hole"
+        radius=300,
+        body_type="black_hole",
+        name="Black Hole"
     )
 
     bodies = [black_hole]
@@ -42,7 +43,7 @@ def create_black_hole_system():
             position=[x, y],
             velocity=[vx, vy],
             radius=300,
-            body_type="particle"
+            body_type="particle",
         )
 
         bodies.append(particle)
