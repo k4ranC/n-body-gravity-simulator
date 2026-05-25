@@ -30,7 +30,8 @@ simulator = Simulator(
 renderer = Renderer()
 
 paused = False
-simulation_speed = 1
+physics_timestep = 1
+steps_per_frame = 1
 
 running = True
 
@@ -49,14 +50,11 @@ while running:
 
             # Speed up
             elif event.key == pygame.K_EQUALS:
-                simulation_speed *= 2
+                steps_per_frame *= 2
 
             # Slow down
             elif event.key == pygame.K_MINUS:
-                simulation_speed /= 2
-
-                if simulation_speed < 0.125:
-                    simulation_speed = 0.125
+                steps_per_frame = max(1, steps_per_frame // 2)
 
             # Reset simulation
             elif event.key == pygame.K_r:
@@ -70,7 +68,8 @@ while running:
     renderer.handle_input()
 
     if not paused:
-        simulator.step(simulation_speed)
+        for _ in range(steps_per_frame):
+            simulator.step(physics_timestep)
     renderer.draw(bodies)
     renderer.tick()
 

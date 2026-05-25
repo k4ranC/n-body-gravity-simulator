@@ -18,5 +18,19 @@ def create_solar_system():
     saturn = Body(5.683e26, [1427, 0], [0, 0.838], 58232, "planet", "Saturn")
     uranus = Body(8.681e25, [2871, 0], [0, 0.588], 25362, "planet", "Uranus")
     neptune = Body(1.024e26, [4495, 0], [0, 0.470], 24622, "planet", "Neptune")
-    
+
+    planets = [mercury, venus, earth, mars, jupiter, saturn, uranus, neptune]
+
+    # Calculate the total momentum of the planets and set the sun's velocity to ensure the center of mass is stationary
+    total_momentum = [0, 0]
+
+    # Calculate total momentum of planets
+    for planet in planets:
+        total_momentum[0] += planet.mass * planet.velocity[0]
+        total_momentum[1] += planet.mass * planet.velocity[1]
+
+    # Set sun's velocity to balance the total momentum of the planets
+    sun.velocity[0] = -total_momentum[0] / sun.mass
+    sun.velocity[1] = -total_momentum[1] / sun.mass
+
     return [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune]
