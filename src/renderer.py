@@ -1,4 +1,5 @@
 import pygame
+import numpy as np
 
 WIDTH = 1200
 HEIGHT = 800
@@ -6,10 +7,10 @@ HEIGHT = 800
 BACKGROUND = (0, 0, 0)
 
 COLOURS = {
-    "star": (255, 165, 0), # Orange
-    "planet": (100, 149, 237), # Blue
-    "black_hole": (30, 30, 30), # Dark grey
-    "particle": (180, 180, 180) # Light grey
+    "star": (255, 165, 0),
+    "planet": (100, 149, 237),
+    "black_hole": (30, 30, 30),
+    "particle": (180, 180, 180)
 }
 
 
@@ -30,6 +31,10 @@ class Renderer:
     def world_to_screen(self, position):
         x = (position[0] - self.camera_x) * self.zoom + WIDTH / 2
         y = (position[1] - self.camera_y) * self.zoom + HEIGHT / 2
+
+        if not np.isfinite(x) or not np.isfinite(y):
+            return None
+
         return int(x), int(y)
 
     def handle_input(self):
@@ -37,17 +42,17 @@ class Renderer:
 
         move_speed = 80 / self.zoom
 
-        if keys[pygame.K_w] or keys[pygame.K_UP]: # Move camera up
+        if keys[pygame.K_w] or keys[pygame.K_UP]:
             self.camera_y -= move_speed
-        if keys[pygame.K_s] or keys[pygame.K_DOWN]: # Move camera down
+        if keys[pygame.K_s] or keys[pygame.K_DOWN]:
             self.camera_y += move_speed
-        if keys[pygame.K_a] or keys[pygame.K_LEFT]: # Move camera left
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             self.camera_x -= move_speed
-        if keys[pygame.K_d] or keys[pygame.K_RIGHT]: # Move camera right
+        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.camera_x += move_speed
 
     def handle_event(self, event):
-        if event.type == pygame.MOUSEWHEEL: # Zoom in/out with mouse wheel
+        if event.type == pygame.MOUSEWHEEL:
             if event.y > 0:
                 self.zoom *= 1.15
             elif event.y < 0:
@@ -59,9 +64,21 @@ class Renderer:
         if len(body.trail) < 2:
             return
 
-        screen_points = [self.world_to_screen(point) for point in body.trail]
+        screen_points = []
+        for point in body.trail:
+            if not np.isfinite(point[0]) or not np.isfinite(point[1]):
+                continue
+            result = self.world_to_screen(point)
+            if result is None:
+                continue
+            sx, sy = result
+            if -10000 < sx < 10000 and -10000 < sy < 10000:
+                screen_points.append((sx, sy))
 
-        pygame.draw.lines( # Draw the trail of the body as a line connecting its previous positions
+        if len(screen_points) < 2:
+            return
+
+        pygame.draw.lines(
             self.screen,
             colour,
             False,
@@ -69,7 +86,7 @@ class Renderer:
             1
         )
 
-    def draw_label(self, body, screen_position): # Draw the name of the body next to it
+    def draw_label(self, body, screen_position):
         label = self.font.render(body.name, True, (220, 220, 220))
         self.screen.blit(label, (screen_position[0] + 8, screen_position[1] + 8))
 
@@ -89,9 +106,10 @@ class Renderer:
                 f"Status: {status} | "
                 f"Speed: {steps_per_frame}x"
             )
-            
+
             info = self.font.render(info_text, True, (255, 255, 255))
             self.screen.blit(info, (10, 10))
+
             controls = [
                 "SPACE: Pause / Play",
                 "=: Speed Up",
@@ -118,12 +136,16 @@ class Renderer:
             body.trail.append(body.position.copy())
 
             if len(body.trail) > 300:
-                body.trail.pop(0) # Limit trail length to prevent memory issues
+                body.trail.pop(0)
 
             self.draw_trail(body, colour)
 
             screen_position = self.world_to_screen(body.position)
-            screen_radius = max(3, int(body.radius * 0.000015)) # Scale the radius for better visibility, with a minimum size of 3 pixels
+
+            if screen_position is None:
+                continue
+
+            screen_radius = max(3, int((body.radius ** 0.5) * 0.0008 * (self.zoom ** 0.4) * 100))
 
             pygame.draw.circle(
                 self.screen,
@@ -133,9 +155,9 @@ class Renderer:
             )
 
             if body.body_type != "particle":
-                self.draw_label(body, screen_position) # Only draw labels for non-particle bodies to reduce clutter
+                self.draw_label(body, screen_position)
 
         pygame.display.flip()
 
-    def tick(self): # Limit the frame rate to 60 FPS
+    def tick(self):
         self.clock.tick(60)
